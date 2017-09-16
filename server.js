@@ -1,5 +1,6 @@
 // Required dependencies 
 var express = require("express");
+var mongoose = require("mongoose");
 var expressHandlebars = require("express-handlebars");
 var bodyParser = require("body-parser");
 
@@ -28,6 +29,21 @@ app.use(bodyParser.urlencoded({
 
 // Have every request go through our router middleware
 app.use(router);
+
+// if deployed, use the deplopyed database, Otherwise use the local mongoHeadlines database
+var db = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+// Connect mongooose to our database
+mongoose.connect(db, function(error) {
+	//Log any errors connecting with mongoose
+	if(error) {
+		console.log(error);
+	}
+	// Or log a success message
+	else {
+		console.log("mongoose connection is successful");
+	}
+});
 
 // Listen on the port
 app.listen(PORT, function() {
